@@ -1,4 +1,6 @@
 
+# Instana Kubernetes Quickstart w/ Helm
+
 ## Who this guide is for
 This guide will get you started with Instana on Kubernetes quickly. For production deployments you should read the complete documentation carefully and be aware of special cases that may apply to your specific Kubernetes configuration.
 
@@ -6,15 +8,20 @@ This guide will get you started with Instana on Kubernetes quickly. For producti
 You will need access to a Kubernetes cluster (minimum version 1.21) with `kubectl` and `helm` (v3) configured on your local machine.
 
 ## Step 1: Install the agent
-Follow the installation steps for helm.[IBM Documentation](https://www.ibm.com/docs/en/instana-observability/current?topic=requirements-installing-host-agent-kubernetes#install-by-using-the-helm-chart)
+
+1. Log in to your Instana account and choose "Agents" from the "More" menu:
+![Screenshot of the agents menu](screenshots/menu.png)
+
+2. Choose "Kubernetes" from the list of available platforms and then choose "Helm" from the installation methods:
+![Screenshot of the helm installation](screenshots/helm.png)
+
+The helm chart provides a number of helpful flags for commonly used configuration options: [Helm Chart Configuration Reference](https://github.com/instana/helm-charts/tree/main/instana-agent#configuration-reference). 
 
 > **Note**
-> While this  quickstart guide uses helm, we recommend using the [Instana Operator]() for production deployments.
+> While this  quickstart guide uses helm, we recommend using the [Instana Operator](https://www.ibm.com/docs/en/instana-observability/current?topic=requirements-installing-host-agent-kubernetes#install-by-using-the-operator) for production deployments.
 
 ## Step 2: Configure Applications
-The AutoTrace WebHook can instrument many of your applications. For other applications, you will simply need to install a single Instana instrumentation library and initialize it.
-
-_link to list of supported languages_
+The AutoTrace WebHook can instrument many of your applications. For other applications, you will simply need to install a single Instana instrumentation library and initialize it. See a [complete list of language support here](../languages.md).
 
 The instrumentation for some languages needs to know how to communicate with the agent. This step is required for the following languages:
 
@@ -25,7 +32,8 @@ The instrumentation for some languages needs to know how to communicate with the
 * .NET Core
 
 Add the following snippet to your pod deployment definitions:
-```
+
+```bash
 spec:
   containers:
     env:
@@ -35,7 +43,7 @@ spec:
             fieldPath: status.hostIP
 ```
 
-You can see an example of this in the robot-shop application.
+You can see an [example of this](https://github.com/instana/robot-shop/blob/55292e2199f2fb00a165b1f7d3045fe7f8922038/K8s/helm/templates/catalogue-deployment.yaml#L24) in the Robot Shop application helm chart.
 
 ## Step 3: Configure Supported Technologies
 Once the agent is installed and your applications are instrumented, any upstream or downstream services such as databases and messaging queues will be automatically discovered by the agent. For some technologies, specific configuration allows the Instana agent to collect additional data. You can check the list of supported technologies for any additional configuration steps based on the technologies that you have in use.
@@ -46,9 +54,9 @@ https://www.ibm.com/docs/en/instana-observability/current?topic=technologies-mon
 
 
 ## Enable the Agent Service (Optional)
-The helm chart provides a number of helpful flags for commonly used configuration options: [Helm Chart Configuration Reference](https://github.com/instana/helm-charts/tree/main/instana-agent#configuration-reference). A common option is to enable the agent service which is a prerequisite for Prometheus, OpenTelemetry, and other agent APIs:
+A common option is to enable the agent service which is a prerequisite for Prometheus, OpenTelemetry, and other agent APIs:
 
-```
+```bash
 helm upgrade instana-agent \
 --namespace instana-agent \
 --reuse-values \
@@ -63,7 +71,7 @@ helm upgrade instana-agent \
 ## Enable OpenTelemetry Support (Optional)
 The Instana agent can ingest metrics, traces, and logs* in OTLP format. This can be enabled for http, grpc, or both:
 
-```
+```bash
 helm upgrade instana-agent \
 --namespace instana-agent \
 --reuse-values \
@@ -74,7 +82,7 @@ helm upgrade instana-agent \
 ### Configuring OpenTelemetry Services
 Applications instrumented with OpenTelemetry need to be configured to send their telemetry to the Instana Agent’s endpoints.
 
-```
+```yaml
 spec:
   containers:
     env:
@@ -85,11 +93,11 @@ spec:
 ```
 
 ## Enable AutoTrace (Optional)
-The Instana AuotTrace WebHook can automatically install instrumentation for Node.js, .NET Core, Ruby, and Python applications running in your cluster. For more information, see the complete AutoTrace documentation.
+The Instana AutoTrace WebHook can automatically install instrumentation for Node.js, .NET Core, Ruby, and Python applications running in your cluster. For more information, see the complete AutoTrace documentation.
 
 AutoTrace should not be used with applications that are instrumented with OpenTelemetry or other non-Instana instrumentation.
 
-```
+```bash
 helm install --create-namespace --namespace instana-autotrace-webhook instana-autotrace-webhook \
   --repo https://agents.instana.io/helm instana-autotrace-webhook \
   --set webhook.imagePullCredentials.password=<download_key>
