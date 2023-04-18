@@ -18,10 +18,10 @@ You will need access to a Kubernetes cluster (minimum version 1.21) with `kubect
 > **Note**
 > While this  quickstart guide uses helm, we recommend using the [Instana Operator](https://www.ibm.com/docs/en/instana-observability/current?topic=requirements-installing-host-agent-kubernetes#install-by-using-the-operator) for production deployments.
 
-## Step 2: Configure Applications
+## Step 2: Configure Monitored Applications
 The AutoTrace WebHook can instrument many of your applications. For other applications, you will simply need to install a single Instana instrumentation library and initialize it. See a [complete list of language support here](../languages.md).
 
-The instrumentation for some languages needs to know how to communicate with the agent. This step is required for the following languages:
+The instrumentation for some languages [needs to know how to communicate with the agent](https://www.ibm.com/docs/en/instana-observability/current?topic=technologies-monitoring-postgresql). This step is required for the following languages:
 
 * Node.js
 * Go
