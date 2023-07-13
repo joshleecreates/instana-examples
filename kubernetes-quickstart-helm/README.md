@@ -55,6 +55,7 @@ We can provide this configuration with the following helm command:
 helm upgrade instana-agent \
 --namespace instana-agent \
 --reuse-values \
+--repo https://agents.instana.io/helm \
 --set configuration.yaml |
   com.instana.plugin.postgresql:
     user: '<USERNAME>'
@@ -72,7 +73,9 @@ The [helm chart](https://github.com/instana/helm-charts/tree/main/instana-agent#
 helm upgrade instana-agent \
 --namespace instana-agent \
 --reuse-values \
---set service.create=true
+--set service.create=true \
+--repo https://agents.instana.io/helm \
+instana-agent
 ```
 
 > **Note**
@@ -86,7 +89,9 @@ helm upgrade instana-agent \
 --namespace instana-agent \
 --reuse-values \
 --set opentelemetry.grpc.enabled=true \
---set opentelemetry.http.enabled=true
+--set opentelemetry.http.enabled=true \
+--repo https://agents.instana.io/helm \
+instana-agent
 ```
 
 ### Configuring OpenTelemetry Services
